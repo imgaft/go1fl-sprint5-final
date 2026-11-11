@@ -2,13 +2,15 @@ package trainings
 
 import (
 	"fmt"
-	"github.com/Yandex-Practicum/tracker/internal/personaldata"
-	"github.com/Yandex-Practicum/tracker/internal/spentenergy"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Yandex-Practicum/tracker/internal/personaldata"
+	"github.com/Yandex-Practicum/tracker/internal/spentenergy"
 )
 
+// Training хранит сведения о тренировке и пользователе.
 type Training struct {
 	Steps        int
 	TrainingType string
@@ -16,6 +18,7 @@ type Training struct {
 	personaldata.Personal
 }
 
+// Parse разбирает количество шагов, тип и продолжительность тренировки.
 func (t *Training) Parse(datastring string) error {
 	parts := strings.Split(datastring, ",")
 	if len(parts) != 3 {
@@ -39,6 +42,7 @@ func (t *Training) Parse(datastring string) error {
 	return nil
 }
 
+// ActionInfo возвращает сведения о тренировке.
 func (t Training) ActionInfo() (string, error) {
 	var calories float64
 	var err error
@@ -53,5 +57,12 @@ func (t Training) ActionInfo() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n", t.TrainingType, t.Duration.Hours(), spentenergy.Distance(t.Steps, t.Height), spentenergy.MeanSpeed(t.Steps, t.Height, t.Duration), calories), nil
+	return fmt.Sprintf(
+		"Тип тренировки: %s\nДлительность: %.2f ч.\nДистанция: %.2f км.\nСкорость: %.2f км/ч\nСожгли калорий: %.2f\n",
+		t.TrainingType,
+		t.Duration.Hours(),
+		spentenergy.Distance(t.Steps, t.Height),
+		spentenergy.MeanSpeed(t.Steps, t.Height, t.Duration),
+		calories,
+	), nil
 }
